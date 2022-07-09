@@ -1,18 +1,18 @@
 {
-  "author": "un boxing man <unboxingman@hotmail.com> (https://www.unboxingman.com)",
+  "author": "un-boxing-man <unboxingman@hotmail.com> (https://www.unboxingman.com)",
   "bugs": {
     "url": "https://github.com/un-boxing-hosting/boxing-hosting-utils/issues"
   },
   "dependencies": {
+    "user": "^0.0.0",
     "wumpfetch": "^0.3.0"
   },
   "description": "utils for un boxing hosting bots",
   "homepage": "https://bots.unboxingman.com",
-  
   "license": "MIT",
   "main": "index.js",
   "maintainers": [
-    "un boxing man <unboxingman@hotmail.com> (https://www.unboxingman.com)"
+    "un-boxing-man <unboxingman@hotmail.com> (https://www.unboxingman.com)"
   ],
   "name": "boxing-hosting-utils",
   "repository": {
@@ -20,10 +20,9 @@
     "url": "git://github.com/un-boxing-hosting/boxing-hosting-utils.git"
   },
   "types": "index.d.ts",
-  "version": "1.0.7",
+  "version": "1.0.3",
   "publishConfig": {
-    "name": "@un-boxing-hosting/boxing-hosting-utils.git",
-  "registry":"https://npm.pkg.github.com/un-boxing-hosting/boxing-hosting-utils"
-}
-
+    "name": "boxing-hosting-utils.git",
+    "registry": "https://npm.pkg.github.com/un-boxing-hosting/"
+  }
 }
