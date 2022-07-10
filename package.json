@@ -14,7 +14,7 @@
   "maintainers": [
     "un-boxing-man <unboxingman@hotmail.com> (https://www.unboxingman.com)"
   ],
-  "name": "boxing-hosting-utils",
+  "name": "@un-boxing-hosting/boxing-hosting-utils",
   "repository": {
     "type": "git",
     "url": "git://github.com/un-boxing-hosting/boxing-hosting-utils.git"
@@ -23,6 +23,6 @@
   "version": "1.0.3",
   "publishConfig": {
     "name": "boxing-hosting-utils.git",
-    "registry": "https://npm.pkg.github.com/un-boxing-hosting/"
+    "registry": "https://npm.pkg.github.com/un-boxing-hosting/boxing-hosting-utils"
   }
 }
