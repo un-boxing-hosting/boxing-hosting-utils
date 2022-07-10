@@ -22,7 +22,6 @@
   "types": "index.d.ts",
   "version": "1.0.3",
   "publishConfig": {
-    "name": "boxing-hosting-utils.git",
-    "registry": "https://npm.pkg.github.com/un-boxing-hosting/boxing-hosting-utils/"
+  "@un-boxing-hosting:registry": "https://npm.pkg.github.com"
   }
 }
