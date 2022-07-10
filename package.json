@@ -20,7 +20,7 @@
     "url": "git://github.com/un-boxing-hosting/boxing-hosting-utils.git"
   },
   "types": "index.d.ts",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publishConfig": {
   "@un-boxing-hosting:registry": "https://npm.pkg.github.com"
   }
