@@ -6,7 +6,7 @@ name: boxing-hosting-utils
 on:
   release:
     types: [created]
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
