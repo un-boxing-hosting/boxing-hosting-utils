@@ -20,7 +20,7 @@ json config
     }
 ```
 
-geting userid list:
+example :
 ```js
 const config = require(`./config`);
 const util = require('@un-boxing-hosting/boxing-hosting-utils');
@@ -48,6 +48,8 @@ db.get(`id`);
 db.delete(`id`);
 
 ```
+## Support
+[Dark Side Development Discord/boxing hosting](http://discord.com/invite/4V6wyxrYfe)
 
 ## License
 [MIT](LICENSE)
