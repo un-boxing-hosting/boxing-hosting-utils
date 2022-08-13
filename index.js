@@ -1,19 +1,23 @@
 /**
- * @module  boxing-hosting-utils
- * @copyright un boxing man 2021
+ * @module  @un-boxing-hosting/boxing-hosting-utils
+ * @copyright un boxing man 2022
  * @license MIT
  */
 const wump = require('wumpfetch');
+const Sequelize = require('sequelize');
 //const parser = require(`body-parser`)
 
-module.exports = class Client {
+class Client {
 
-    constructor(DStoken, toptoken, ) {
+    constructor(DStoken, toptoken) {
         this.DStoken = DStoken;
         this.toptoken = toptoken;
 
 
+
     }
+
+
 
     /**
      * get idlist.
@@ -91,3 +95,109 @@ module.exports = class Client {
 
 
 };
+class db {
+    constructor(dbjs) {
+        this.dbjs = dbjs;
+        // console.log(typeof this.dbjs)
+        this.dbLogin();
+
+    }
+    async dbLogin() {
+        //console.log(`yes`)
+        if (typeof this.dbjs !== 'object') throw new TypeError('db login must be a json');
+
+        this.sequelize = new Sequelize(this.dbjs.database, this.dbjs.user, this.dbjs.password, {
+            host: this.dbjs.host,
+            port: this.dbjs.port,
+            dialect: 'mysql',
+            logging: false,
+        });
+        // console.log(this.dbjs.table)
+        this.table = this.sequelize.define(this.dbjs.table, {
+            id: {
+                type: Sequelize.STRING,
+                primaryKey: true,
+                unique: true,
+                defaultValue: 'null'
+            },
+            json: {
+                type: Sequelize.TEXT,
+                defaultValue: 'null'
+            }
+
+        });
+        return new Promise(async (resolve, reject) => {
+            try {
+                await this.table.sync();
+                resolve(true);
+            } catch (err) {
+                reject(new Error(err));
+            }
+        });
+
+
+    }
+    /**
+     * db set.
+     * 
+     */
+    async set(id, json) {
+        // console.log(id)
+        //   console.log(await this.table.findByPk(id) instanceof this.table)
+        var pk = await this.table.findByPk(id) instanceof this.table
+        return new Promise(async (resolve, reject) => {
+            if (pk == true) {
+                //console.log(`updating`)
+                this.table.update({
+                    json: `${json}`
+                }, {
+                    where: {
+                        id: id
+                    }
+                })
+            } else {
+                // console.log(`creating`)
+                this.table.create({
+                    id: id,
+                    json: json
+                })
+            }
+        })
+    }
+    /**
+     * db get.
+     * 
+     */
+    async get(id) {
+        return new Promise(async (resolve, reject) => {
+            var get = await this.table.findOne({
+                where: {
+                    id: id
+                }
+            })
+            if (get === null) {
+                resolve(null)
+
+            } else {
+                //  console.log(get.json)
+                resolve(get.json)
+            }
+        })
+    }
+    /**
+     * db delete.
+     * 
+     */
+    async delete(id) {
+        this.table.destroy({
+            where: {
+                id: id
+            }
+        })
+
+    }
+}
+module.exports = {
+    Client,
+    db
+}

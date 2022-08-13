@@ -1,9 +1,11 @@
 {
   "author": "un-boxing-man <unboxingman@hotmail.com> (https://www.unboxingman.com)",
   "bugs": {
-    "url": "https://github.com/un-boxing-hosting/boxing-hosting-utils/issues"
+    "url": "https://github.com/un-boxing-hosting/@un-boxing-hosting/boxing-hosting-utils/issues"
   },
   "dependencies": {
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.3",
     "user": "^0.0.0",
     "wumpfetch": "^0.3.0"
   },
@@ -17,12 +19,11 @@
   "name": "@un-boxing-hosting/boxing-hosting-utils",
   "repository": {
     "type": "git",
-    "url": "git://github.com/un-boxing-hosting/boxing-hosting-utils.git"
+    "url": "git://github.com/un-boxing-hosting/@un-boxing-hosting/boxing-hosting-utils.git"
   },
   "types": "index.d.ts",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publishConfig": {
     "access": "public"
- 
   }
 }

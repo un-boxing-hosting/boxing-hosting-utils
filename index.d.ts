@@ -1,4 +1,4 @@
-declare module 'boxing-hosting-utils' {
+declare module '@un-boxing-hosting/boxing-hosting-utils' {
 
 
 
@@ -14,6 +14,33 @@ declare module 'boxing-hosting-utils' {
     interface postServers {
         error: boolean;
         message: string;
+    }
+    interface dbGet {
+        error: boolean;
+        message: string;
+
+    }
+    interface dbSet {
+        error: boolean;
+        message: string;
+    }
+    interface dbDelete {
+        error: boolean;
+        message: string;
+    }
+    interface dbLogin {
+        error: boolean;
+        message: string;
+    }
+
+    export class db {
+        constructor(dbjs: object);
+        public dbjs: object;
+        public dbLogin(): Promise<dbLogin>;
+        public get(key: string): Promise<dbGet>;
+        public set(key: string, value: string): Promise<dbSet>;
+        public delete(key: string): Promise<dbDelete>;
+       
     }
 
 
