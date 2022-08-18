@@ -64,7 +64,7 @@ declare module '@un-boxing-hosting/boxing-hosting-utils' {
     }
 
 
-    export default class Client {
+    export  class Client {
         constructor(DStoken: String, toptoken: String, boatstoken: String);
 
         public DStoken: String;
