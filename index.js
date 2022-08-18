@@ -5,6 +5,7 @@
  */
 const wump = require('wumpfetch');
 const Sequelize = require('sequelize');
+const lodash_1 = require("lodash");
 //const parser = require(`body-parser`)
 
 class Client {
@@ -146,21 +147,42 @@ class db {
         //   console.log(await this.table.findByPk(id) instanceof this.table)
         var pk = await this.table.findByPk(id) instanceof this.table
         return new Promise(async (resolve, reject) => {
-            if (pk == true) {
-                //console.log(`updating`)
+            if (id.includes(".")) {
+                const keySplit = id.split(".");
+                const [result] = await this.table.findByPk(keySplit[0]) instanceof this.table;
+                let obj;
+                if (result instanceof Object == false) {
+                    obj = {};
+                } else {
+                    obj = result;
+                }
+                const valueSet = (0, lodash_1.set)(obj ?? {}, keySplit.slice(1).join("."), json);
                 this.table.update({
-                    json: `${json}`
+                    json: valueSet
                 }, {
                     where: {
-                        id: id
+                        id: keySplit[0]
                     }
                 })
+                resolve(true)
             } else {
-                // console.log(`creating`)
-                this.table.create({
-                    id: id,
-                    json: json
-                })
+                if (pk == true) {
+                    //console.log(`updating`)
+                    this.table.update({
+                        json: `${json}`
+                    }, {
+                        where: {
+                            id: id
+                        }
+                    })
+                } else {
+                    // console.log(`creating`)
+                    this.table.create({
+                        id: id,
+                        json: json
+                    })
+                }
+                resolve(true)
             }
         })
     }
@@ -170,17 +192,96 @@ class db {
      */
     async get(id) {
         return new Promise(async (resolve, reject) => {
+            if (id.includes(".")) {
+                const keySplit = id.split(".");
+                const [result] = await this.table.findOne({
+                    where: {
+                        id: keySplit[0]
+                    }
+                });
+                resolve((0, lodash_1.get)(result, keySplit.slice(1).join(".")));
+            } else {
+                var get = await this.table.findOne({
+                    where: {
+                        id: id
+                    }
+                })
+                if (get === null) {
+                    resolve(null)
+
+                } else {
+                    //  console.log(get.json)
+                    resolve(get.json)
+                }
+            }
+        })
+    }
+    async getArray(id) {
+        return new Promise(async (resolve, reject) => {
             var get = await this.table.findOne({
                 where: {
                     id: id
                 }
             })
             if (get === null) {
-                resolve(null)
+                resolve([])
+
+            } else {
+                console.log(get.json)
+                var result  = JSON.parse(get.json);
+             
+                if (!Array.isArray(result)) {
+                    reject(new Error(`Current value with key: (${id}) is not an array`));
+                } else {
+                     // console.log(get.json)
+                    resolve(result)
+                }
+            }
+        })
+
+    }
+    async pull(id, json) {
+        var a = [1,2,3]
+        // remove 1 from array
+        a.splice(a.indexOf(1), 1);
+        
+        return new Promise(async (resolve, reject) => {
+            let currentArr = await this.getArray(id);
+            console.log(currentArr)
+            if (Array.isArray(json))
+                currentArr = currentArr.concat(json);
+            else
+                currentArr.splice(currentArr.indexOf(json), 1);
+            this.set(id, `[${currentArr}]`);
+            resolve(true);
+        })
+    }
+    async push(id, json) {
+        return new Promise(async (resolve, reject) => {
+            let currentArr = await this.getArray(id);
+            console.log(currentArr)
+            if (Array.isArray(json))
+                currentArr = currentArr.concat(json);
+            else
+                currentArr.push(json);
+            this.set(id, `[${currentArr}]`);
+            resolve(true);
+        })
+    }
+
+    async has(id) {
+        return new Promise(async (resolve, reject) => {
+            var get = await this.table.findOne({
+                where: {
+                    id: id
+                }
+            })
+            if (get === null) {
+                resolve(false)
 
             } else {
                 //  console.log(get.json)
-                resolve(get.json)
+                resolve(true)
             }
         })
     }

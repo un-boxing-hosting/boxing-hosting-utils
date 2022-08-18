@@ -28,6 +28,22 @@ declare module '@un-boxing-hosting/boxing-hosting-utils' {
         error: boolean;
         message: string;
     }
+    interface push {
+        error: boolean;
+        message: string;
+    }
+    interface pull {
+        error: boolean;
+        message: string;
+    }
+    interface has {
+        error: boolean;
+        message: string;
+    }
+    interface getArray {
+        error: boolean;
+        message: string;
+    }
     interface dbLogin {
         error: boolean;
         message: string;
@@ -36,9 +52,13 @@ declare module '@un-boxing-hosting/boxing-hosting-utils' {
     export class db {
         constructor(dbjs: object);
         public dbjs: object;
-        public dbLogin(): Promise<dbLogin>;
+        private dbLogin(): Promise<dbLogin>;
         public get(key: string): Promise<dbGet>;
         public set(key: string, value: string): Promise<dbSet>;
+        public push(key: string, value: string): Promise<push>;
+        public pull(key: string, value: string): Promise<pull>;
+        public has(key: string): Promise<has>;
+        public getArray(key: string): Promise<getArray>;
         public delete(key: string): Promise<dbDelete>;
        
     }
