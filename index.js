@@ -18,8 +18,6 @@ class Client {
 
     }
 
-
-
     /**
      * get idlist.
      * 
@@ -228,12 +226,12 @@ class db {
 
             } else {
                 console.log(get.json)
-                var result  = JSON.parse(get.json);
-             
+                var result = JSON.parse(get.json);
+
                 if (!Array.isArray(result)) {
                     reject(new Error(`Current value with key: (${id}) is not an array`));
                 } else {
-                     // console.log(get.json)
+                    // console.log(get.json)
                     resolve(result)
                 }
             }
@@ -241,10 +239,10 @@ class db {
 
     }
     async pull(id, json) {
-        var a = [1,2,3]
+        var a = [1, 2, 3]
         // remove 1 from array
         a.splice(a.indexOf(1), 1);
-        
+
         return new Promise(async (resolve, reject) => {
             let currentArr = await this.getArray(id);
             console.log(currentArr)

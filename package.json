@@ -23,7 +23,7 @@
     "url": "git://github.com/un-boxing-hosting/@un-boxing-hosting/boxing-hosting-utils.git"
   },
   "types": "index.d.ts",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "publishConfig": {
     "access": "public"
   }
