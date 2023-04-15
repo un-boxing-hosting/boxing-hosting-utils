@@ -17,9 +17,6 @@ class Client {
 
 
     }
-
-
-
     /**
      * get idlist.
      * 
@@ -56,7 +53,6 @@ class Client {
             }
         });
     }
-
     async postServers(clientID, servers) {
         if (typeof servers !== 'number') throw new TypeError('Server count must be a number');
         if (typeof clientID !== 'string') throw new TypeError('Bot ID must be a string');
@@ -93,13 +89,13 @@ class Client {
 
         });
     }
-
-
 };
+//Drogo says hi
 class db {
     constructor(dbjs) {
         this.dbjs = dbjs;
         // console.log(typeof this.dbjs)
+
         this.dbLogin();
 
     }
@@ -147,42 +143,91 @@ class db {
         //   console.log(await this.table.findByPk(id) instanceof this.table)
         var pk = await this.table.findByPk(id) instanceof this.table
         return new Promise(async (resolve, reject) => {
+            if (id === undefined) throw new TypeError('id must be a string');
+            if (id === null) throw new TypeError('id must be a string');
             if (id.includes(".")) {
                 const keySplit = id.split(".");
-                const [result] = await this.table.findByPk(keySplit[0]) instanceof this.table;
-                let obj;
-                if (result instanceof Object == false) {
-                    obj = {};
+                //console.log(keySplit.toString())
+                const result = await this.table.findByPk(keySplit[0]);
+                var obj
+                if (result === null) {
+                    obj = {}
                 } else {
-                    obj = result;
+                    obj = JSON.parse(result.json)
                 }
-                const valueSet = (0, lodash_1.set)(obj ?? {}, keySplit.slice(1).join("."), json);
-                this.table.update({
-                    json: valueSet
-                }, {
-                    where: {
-                        id: keySplit[0]
-                    }
-                })
-                resolve(true)
+                // console.log(obj)
+                const valueSet = (0, lodash_1.set)(obj, keySplit.slice(1).join("."), json);
+                //console.log(valueSet)
+                //console.log(result instanceof this.table)
+                if (result instanceof this.table == false) {
+                    setTimeout(async () => {
+                        await this.table.create({
+                            id: keySplit[0],
+                            json: JSON.stringify(valueSet)
+                        })
+                        resolve(true)
+                    }, 5000)
+                } else {
+                    setTimeout(async () => {
+                        this.table.update({
+                            json: JSON.stringify(valueSet)
+                        }, {
+                            where: {
+                                id: keySplit[0]
+                            }
+                        })
+                        resolve(true)
+                    }, 5000)
+                }
+
             } else {
-                if (pk == true) {
-                    //console.log(`updating`)
-                    this.table.update({
-                        json: `${json}`
-                    }, {
-                        where: {
-                            id: id
-                        }
-                    })
+                if (Array.isArray(json)) {
+                    if (pk == true) {
+                        //console.log(`updating`)
+                        setTimeout(async () => {
+                            this.table.update({
+                                json: `${json}`
+
+                            }, {
+                                where: {
+                                    id: id
+                                }
+                            })
+                        }, 5000)
+                    } else {
+                        // console.log(`creating`)
+                        setTimeout(async () => {
+                            this.table.create({
+                                id: id,
+                                json: json
+                            })
+                        }, 5000)
+                    }
+                    resolve(true)
                 } else {
-                    // console.log(`creating`)
-                    this.table.create({
-                        id: id,
-                        json: json
-                    })
+                    if (pk == true) {
+                        //console.log(`updating`)
+                        setTimeout(async () => {
+                            this.table.update({
+                                json: JSON.stringify(json)
+
+                            }, {
+                                where: {
+                                    id: id
+                                }
+                            })
+                        }, 5000)
+                    } else {
+                        // console.log(`creating`)
+                        setTimeout(async () => {
+                            this.table.create({
+                                id: id,
+                                json: JSON.stringify(json)
+                            })
+                        }, 5000)
+                    }
+                    resolve(true)
                 }
-                resolve(true)
             }
         })
     }
@@ -192,14 +237,25 @@ class db {
      */
     async get(id) {
         return new Promise(async (resolve, reject) => {
+            // console.log(id)
             if (id.includes(".")) {
                 const keySplit = id.split(".");
-                const [result] = await this.table.findOne({
+                // console.log(keySplit.toString())
+                const result = await this.table.findOne({
                     where: {
                         id: keySplit[0]
                     }
                 });
-                resolve((0, lodash_1.get)(result, keySplit.slice(1).join(".")));
+                //console.log(result)
+                if (result === null) {
+                    resolve(null)
+                } else {
+                    var obj = JSON.parse(result.json)
+                    const valueGet = (0, lodash_1.get)(obj, keySplit.slice(1).join("."));
+                    //const valueGet = (0, lodash_1.get)(json, keySplit.slice(1).join("."));
+                    // console.log(valueGet.toString() + " valueGet")
+                    resolve(valueGet);
+                }
             } else {
                 var get = await this.table.findOne({
                     where: {
@@ -210,8 +266,13 @@ class db {
                     resolve(null)
 
                 } else {
-                    //  console.log(get.json)
-                    resolve(get.json)
+                    //console.log(get.json)
+                    try {
+                        var json = JSON.parse(get.json)
+                        resolve(json)
+                    } catch (err) {
+                        resolve(get.json)
+                    }
                 }
             }
         })
@@ -227,44 +288,91 @@ class db {
                 resolve([])
 
             } else {
-                console.log(get.json)
-                var result  = JSON.parse(get.json);
-             
+                var result = '';
+                //check if json
+                try {
+                    result = JSON.parse(get.json)
+                    //resolve(json)
+                } catch (err) {
+                    result = get.json
+                    //resolve(get.json)
+                }
+                // console.log(get.json)
+
                 if (!Array.isArray(result)) {
                     reject(new Error(`Current value with key: (${id}) is not an array`));
                 } else {
-                     // console.log(get.json)
+                    // console.log(get.json)
                     resolve(result)
                 }
             }
         })
 
     }
+    async setArayy(id, json) {
+        // console.log(id)
+        //   console.log(await this.table.findByPk(id) instanceof this.table)
+        var pk = await this.table.findByPk(id) instanceof this.table
+        return new Promise(async (resolve, reject) => {
+            if (id === undefined) throw new TypeError('id must be a string');
+            if (id === null) throw new TypeError('id must be a string');
+
+            if (pk == true) {
+                //console.log(`updating`)
+                this.table.update({
+                    json: json
+                }, {
+                    where: {
+                        id: id
+                    }
+                })
+            } else {
+                // console.log(`creating`)
+                this.table.create({
+                    id: id,
+                    json: json
+                })
+            }
+            resolve(true)
+
+        })
+    }
     async pull(id, json) {
-        var a = [1,2,3]
+        var a = [1, 2, 3]
         // remove 1 from array
         a.splice(a.indexOf(1), 1);
-        
+        var pk = await this.table.findByPk(id) instanceof this.table
         return new Promise(async (resolve, reject) => {
             let currentArr = await this.getArray(id);
-            console.log(currentArr)
-            if (Array.isArray(json))
-                currentArr = currentArr.concat(json);
-            else
-                currentArr.splice(currentArr.indexOf(json), 1);
-            this.set(id, `[${currentArr}]`);
-            resolve(true);
+            var arr = []
+            currentArr.forEach(array => {
+                if (array !== json) {
+                    arr.push(array)
+                }
+            })
+            //  console.log(currentArr)
+            // if (Array.isArray(json))
+            //    currentArr = currentArr.concat(json);
+            // else
+            //     currentArr.splice(currentArr.indexOf(json), 1);
+            setTimeout(() => {
+                //this.set(id, JSON.stringify(arr));
+                this.setArayy(id, `${JSON.stringify(arr)}`);
+            }, 1000);
+
         })
     }
     async push(id, json) {
+        var pk = await this.table.findByPk(id) instanceof this.table
         return new Promise(async (resolve, reject) => {
             let currentArr = await this.getArray(id);
-            console.log(currentArr)
+            //  console.log(currentArr)
             if (Array.isArray(json))
                 currentArr = currentArr.concat(json);
             else
                 currentArr.push(json);
-            this.set(id, `[${currentArr}]`);
+            this.setArayy(id, `${JSON.stringify(currentArr)}`);
+            //console.log(`updating`)
             resolve(true);
         })
     }
